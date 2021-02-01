@@ -1,8 +1,9 @@
 package entity
 
 type Product struct {
-	Id    string
-	Name  string
-	Sku   string
-	Price float64
+	Id         string
+	Name       string
+	Sku        string
+	Price      float64
+	CategoryId int
 }

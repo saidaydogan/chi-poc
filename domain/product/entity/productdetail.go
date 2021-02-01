@@ -1,6 +1,7 @@
 package entity
 
 type ProductDetail struct {
+	Id                  string
 	Description         string
 	StockInformation    StockInformation
 	CategoryInformation CategoryInformation

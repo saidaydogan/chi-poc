@@ -2,16 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="80c9eee0-e5d2-4348-b237-836d65e83c43" name="Default Changelist" comment="init">
-      <change afterPath="$PROJECT_DIR$/api/product/controller/product.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/api/product/model/product.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/api/product/model/productdetail.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/api/product/startup.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/domain/product/entity/product.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/domain/product/entity/productdetail.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/domain/product/persistence/repository.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/domain/product/service/service.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/category/entity/category.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/category/persistence/repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/category/service/service.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/product-api/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/product/controller/product.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/product/controller/product.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/product/startup.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/product/startup.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/product-api/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/product-api/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/domain/product/entity/product.go" beforeDir="false" afterPath="$PROJECT_DIR$/domain/product/entity/product.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/domain/product/entity/productdetail.go" beforeDir="false" afterPath="$PROJECT_DIR$/domain/product/entity/productdetail.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/domain/product/persistence/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/domain/product/persistence/repository.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,6 +76,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="G:\GOREPO\src\chi-poc\domain\category\entity" />
       <recent name="G:\GOREPO\src\chi-poc\service\product" />
       <recent name="G:\GOREPO\src\chi-poc\domain" />
       <recent name="G:\GOREPO\src\chi-poc\cmd\api" />
@@ -127,7 +128,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init" />
-    <option name="LAST_COMMIT_MESSAGE" value="init" />
+    <MESSAGE value="project structure" />
+    <option name="LAST_COMMIT_MESSAGE" value="project structure" />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>

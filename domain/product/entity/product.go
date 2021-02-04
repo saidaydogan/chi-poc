@@ -1,9 +1,9 @@
 package entity
 
 type Product struct {
-	Id         int
-	Name       string
-	Sku        string
-	Price      float64
-	CategoryId int
+	Id         int     `sql:"Id,pk"`
+	Name       string  `sql:"Name"`
+	Sku        string  `sql:"Sku"`
+	Price      float64 `sql:"Price"`
+	CategoryId int     `sql:"CategoryId"`
 }

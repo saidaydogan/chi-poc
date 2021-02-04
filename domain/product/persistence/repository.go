@@ -24,12 +24,15 @@ func NewProductRepository(db *pg.DB) ProductRepository {
 }
 
 func (r *productRepository) GetProductById(id int) (*entity.Product, error) {
-	var product = &entity.Product{
+	var product = entity.Product{
 		Id: id,
 	}
 
-	err := pg.Model(&product).WherePK().Select()
-	return product, err
+	err := r.db.Model(&product).WherePK().Select()
+	if err == pg.ErrNoRows {
+		return nil, NotFoundError
+	}
+	return &product, err
 }
 
 func (r *productRepository) CreateProduct(product entity.Product) error {

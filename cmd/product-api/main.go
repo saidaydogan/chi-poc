@@ -4,6 +4,8 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	productApi "github.com/saidaydogan/chi-poc/api/product"
+	"github.com/saidaydogan/chi-poc/domain/product/persistence"
+	"github.com/saidaydogan/chi-poc/pkg/db/postgre"
 	"net/http"
 	"time"
 )
@@ -17,8 +19,11 @@ func main() {
 
 	r.Use(middleware.Timeout(60 * time.Second))
 
+	var db = postgre.Initialize("postgres", "changeme", "product_db")
+	productRepo := persistence.NewProductRepository(db)
+
 	r.Route("/v1", func(r chi.Router) {
-		productApi.Init(r)
+		productApi.Init(r, productRepo)
 	})
 
 	http.ListenAndServe(":3333", r)

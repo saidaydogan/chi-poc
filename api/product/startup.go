@@ -2,15 +2,11 @@ package product
 
 import (
 	"github.com/go-chi/chi"
-	"github.com/go-pg/pg"
 	"github.com/saidaydogan/chi-poc/api/product/controller"
 	"github.com/saidaydogan/chi-poc/domain/product/persistence"
 )
 
-func Init(r chi.Router) {
-	var db *pg.DB
-	productRepo := persistence.NewProductRepository(db)
-
+func Init(r chi.Router, productRepo persistence.ProductRepository) {
 	var handler = controller.NewBaseHandler(productRepo)
 
 	r.Route("/products", func(r chi.Router) {

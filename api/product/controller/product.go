@@ -1,10 +1,11 @@
 package controller
 
 import (
-	"fmt"
+	"github.com/go-chi/chi"
 	"github.com/saidaydogan/chi-poc/domain/product/entity"
 	"github.com/saidaydogan/chi-poc/domain/product/persistence"
 	"net/http"
+	"strconv"
 )
 
 type BaseHandler struct {
@@ -19,13 +20,26 @@ func NewBaseHandler(productRepo persistence.ProductRepository) *BaseHandler {
 
 func (c *BaseHandler) GetById(w http.ResponseWriter, r *http.Request) {
 
-	var product *entity.Product
+	var (
+		product *entity.Product
+		err     error
+	)
 
-	if product, err := c.productRepo.GetProductById(1); err != nil {
-		fmt.Println("Error", product)
+	idUrlParam := chi.URLParam(r, "id")
+	id, _ := strconv.Atoi(idUrlParam)
+
+	if product, err = c.productRepo.GetProductById(id); err != nil {
+		errStatus := http.StatusInternalServerError
+
+		if persistence.NotFoundError.Equal(err) {
+			errStatus = http.StatusNotFound
+		}
+
+		respondWithError(w, errStatus, err.Error())
+		return
 	}
 
-	w.Write([]byte(fmt.Sprintf("GetById %s", product.Name)))
+	respondwithJSON(w, http.StatusOK, product)
 }
 
 func (c *BaseHandler) GetDetailById(w http.ResponseWriter, r *http.Request) {

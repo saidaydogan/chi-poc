@@ -2,6 +2,10 @@ package errors
 
 import "fmt"
 
+type ErrResponse struct {
+	Errors []string `json:"errors"`
+}
+
 type CustomError interface {
 	Error() string
 	Code() string

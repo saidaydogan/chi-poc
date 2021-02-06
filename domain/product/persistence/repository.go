@@ -7,8 +7,8 @@ import (
 
 type ProductRepository interface {
 	GetProductById(id int) (*entity.Product, error)
-	CreateProduct(product entity.Product) error
-	UpdateProduct(product entity.Product) error
+	CreateProduct(product *entity.Product) error
+	UpdateProduct(product *entity.Product) error
 	DeleteProduct(id int) error
 }
 
@@ -35,13 +35,13 @@ func (r *productRepository) GetProductById(id int) (*entity.Product, error) {
 	return &product, err
 }
 
-func (r *productRepository) CreateProduct(product entity.Product) error {
-	_, err := pg.Model(&product).Insert()
+func (r *productRepository) CreateProduct(product *entity.Product) error {
+	_, err := r.db.Model(product).Insert()
 	return err
 }
 
-func (r *productRepository) UpdateProduct(product entity.Product) error {
-	_, err := pg.Model(&product).Update()
+func (r *productRepository) UpdateProduct(product *entity.Product) error {
+	_, err := r.db.Model(product).WherePK().Update()
 	return err
 }
 
@@ -49,6 +49,6 @@ func (r *productRepository) DeleteProduct(id int) error {
 	var product = &entity.Product{
 		Id: id,
 	}
-	_, err := pg.Model(&product).Delete()
+	_, err := r.db.Model(&product).Delete()
 	return err
 }

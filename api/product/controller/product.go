@@ -1,41 +1,73 @@
 package controller
 
 import (
-	"github.com/go-chi/chi"
+	"encoding/json"
+	ut "github.com/go-playground/universal-translator"
+	"github.com/go-playground/validator/v10"
+	"github.com/saidaydogan/chi-poc/api/product/model"
 	"github.com/saidaydogan/chi-poc/domain/product/entity"
 	"github.com/saidaydogan/chi-poc/domain/product/persistence"
+	"github.com/saidaydogan/chi-poc/domain/product/service"
+	"github.com/saidaydogan/chi-poc/pkg/validatorhelper"
 	"net/http"
-	"strconv"
 )
 
 type BaseHandler struct {
-	productRepo persistence.ProductRepository
+	productService service.ProductService
+	validator      *validator.Validate
+	translator     ut.Translator
 }
 
-func NewBaseHandler(productRepo persistence.ProductRepository) *BaseHandler {
+func NewBaseHandler(productService service.ProductService, validator *validator.Validate, translator ut.Translator) *BaseHandler {
 	return &BaseHandler{
-		productRepo: productRepo,
+		productService: productService,
+		validator:      validator,
+		translator:     translator,
 	}
+}
+
+func (c *BaseHandler) Create(w http.ResponseWriter, r *http.Request) {
+
+	var (
+		createRequest model.CreateProductRequest
+		product       *entity.Product
+	)
+
+	if err := json.NewDecoder(r.Body).Decode(&createRequest); err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := c.validator.Struct(createRequest); err != nil {
+		respondWithErrors(w, http.StatusUnprocessableEntity, validatorhelper.ToErrResponse(err, c.translator).Errors)
+		return
+	}
+
+	product = &entity.Product{
+		Name:       createRequest.Name,
+		Sku:        createRequest.Sku,
+		Price:      createRequest.Price,
+		CategoryId: createRequest.CategoryId,
+	}
+
+	if err := c.productService.CreateProduct(product); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondwithJSON(w, http.StatusCreated, product)
 }
 
 func (c *BaseHandler) GetById(w http.ResponseWriter, r *http.Request) {
 
 	var (
 		product *entity.Product
-		err     error
+		id      int
 	)
 
-	idUrlParam := chi.URLParam(r, "id")
-	id, _ := strconv.Atoi(idUrlParam)
-
-	if product, err = c.productRepo.GetProductById(id); err != nil {
-		errStatus := http.StatusInternalServerError
-
-		if persistence.NotFoundError.Equal(err) {
-			errStatus = http.StatusNotFound
-		}
-
-		respondWithError(w, errStatus, err.Error())
+	id = getUrlParamInt(r, "productId")
+	product = getProductById(c, w, id)
+	if product == nil {
 		return
 	}
 
@@ -47,9 +79,62 @@ func (c *BaseHandler) GetDetailById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *BaseHandler) UpdateById(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("UpdateById"))
+	var (
+		updateRequest model.UpdateProductRequest
+		product       *entity.Product
+		id            int
+		err           error
+	)
+
+	id = getUrlParamInt(r, "productId")
+	product = getProductById(c, w, id)
+	if product == nil {
+		return
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&updateRequest); err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := c.validator.Struct(updateRequest); err != nil {
+		respondWithErrors(w, http.StatusUnprocessableEntity, validatorhelper.ToErrResponse(err, c.translator).Errors)
+		return
+	}
+
+	product.Name = updateRequest.Name
+	product.Sku = updateRequest.Sku
+	product.Price = updateRequest.Price
+	product.CategoryId = updateRequest.CategoryId
+
+	if err = c.productService.UpdateProduct(product); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondwithJSON(w, http.StatusOK, product)
+
 }
 
 func (c *BaseHandler) DeleteById(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("DeleteById"))
+}
+
+func getProductById(c *BaseHandler, w http.ResponseWriter, id int) *entity.Product {
+	var (
+		product *entity.Product
+		err     error
+	)
+
+	if product, err = c.productService.GetProductById(id); err != nil {
+		errStatus := http.StatusInternalServerError
+
+		if persistence.NotFoundError.Equal(err) {
+			errStatus = http.StatusNotFound
+		}
+
+		respondWithError(w, errStatus, err.Error())
+		return nil
+	}
+	return product
 }

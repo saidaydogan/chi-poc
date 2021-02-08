@@ -25,6 +25,12 @@ func main() {
 	r.Use(middleware.Timeout(60 * time.Second))
 
 	var db = postgre.Initialize("postgres", "changeme", "product_db")
+
+	err := postgre.CreateSchema(db)
+	if err != nil {
+		panic(err)
+	}
+
 	productRepo := persistence.NewProductRepository(db)
 	productService := service.NewProductService(productRepo)
 

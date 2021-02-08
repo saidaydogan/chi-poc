@@ -1,12 +1,13 @@
 package persistence
 
 import (
-	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/v10"
 	"github.com/saidaydogan/chi-poc/domain/product/entity"
 )
 
 type ProductRepository interface {
 	GetProductById(id int) (*entity.Product, error)
+	GetProductDetailById(id int) (*entity.Product, error)
 	CreateProduct(product *entity.Product) error
 	UpdateProduct(product *entity.Product) error
 	DeleteProduct(id int) error
@@ -24,11 +25,32 @@ func NewProductRepository(db *pg.DB) ProductRepository {
 }
 
 func (r *productRepository) GetProductById(id int) (*entity.Product, error) {
+	var product = &entity.Product{
+		Id: id,
+	}
+	//var product = new(entity.Product)
+
+	err := r.db.Model(product).WherePK().Select()
+	if err == pg.ErrNoRows {
+		return nil, NotFoundError
+	}
+	return product, err
+}
+
+func (r *productRepository) GetProductDetailById(id int) (*entity.Product, error) {
 	var product = entity.Product{
 		Id: id,
 	}
 
-	err := r.db.Model(&product).WherePK().Select()
+	// Join columns
+	//err := r.db.Model(&product).Relation("Category", func(q *orm.Query) (*orm.Query, error) {
+	//	join := q.TableModel().GetJoin("Category")
+	//	join.Columns = []string{"Id", "Name"}
+	//	return q, nil
+	//}).WherePK().Select()
+	//
+
+	err := r.db.Model(&product).Relation("Category").WherePK().Select()
 	if err == pg.ErrNoRows {
 		return nil, NotFoundError
 	}

@@ -43,12 +43,12 @@ func (c *BaseHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	product = &entity.Product{
-		Name:       createRequest.Name,
-		Sku:        createRequest.Sku,
-		Price:      createRequest.Price,
-		CategoryId: createRequest.CategoryId,
-	}
+	//product = &entity.Product{
+	//	Name:       createRequest.Name,
+	//	Sku:        createRequest.Sku,
+	//	Price:      createRequest.Price,
+	//	CategoryId: createRequest.CategoryId,
+	//}
 
 	if err := c.productService.CreateProduct(product); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
@@ -61,21 +61,52 @@ func (c *BaseHandler) Create(w http.ResponseWriter, r *http.Request) {
 func (c *BaseHandler) GetById(w http.ResponseWriter, r *http.Request) {
 
 	var (
-		product *entity.Product
-		id      int
+		productEntity *entity.Product
+		productModel  *model.ProductModel
+		id            int
 	)
 
 	id = getUrlParamInt(r, "productId")
-	product = getProductById(c, w, id)
-	if product == nil {
+	productEntity = getProductById(c, w, id)
+	if productEntity == nil {
 		return
 	}
 
-	respondwithJSON(w, http.StatusOK, product)
+	productModel = &model.ProductModel{
+		Name:       productEntity.Name,
+		Sku:        productEntity.Sku,
+		Price:      productEntity.Price,
+		CategoryId: productEntity.CategoryId,
+	}
+
+	respondwithJSON(w, http.StatusOK, productModel)
 }
 
 func (c *BaseHandler) GetDetailById(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("GetDetailById"))
+	var (
+		productEntity      *entity.Product
+		productDetailModel *model.ProductDetailModel
+		id                 int
+		err                error
+	)
+
+	id = getUrlParamInt(r, "productId")
+	if productEntity, err = c.productService.GetProductDetailById(id); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	productDetailModel = &model.ProductDetailModel{
+		Name:  productEntity.Name,
+		Sku:   productEntity.Sku,
+		Price: productEntity.Price,
+		Category: &model.CategoryModel{
+			Id:   productEntity.Category.Id,
+			Name: productEntity.Category.Name,
+		},
+	}
+
+	respondwithJSON(w, http.StatusOK, productDetailModel)
 }
 
 func (c *BaseHandler) UpdateById(w http.ResponseWriter, r *http.Request) {
@@ -105,7 +136,7 @@ func (c *BaseHandler) UpdateById(w http.ResponseWriter, r *http.Request) {
 	product.Name = updateRequest.Name
 	product.Sku = updateRequest.Sku
 	product.Price = updateRequest.Price
-	product.CategoryId = updateRequest.CategoryId
+	//product.CategoryId = updateRequest.CategoryId
 
 	if err = c.productService.UpdateProduct(product); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())

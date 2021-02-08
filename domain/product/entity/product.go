@@ -1,9 +1,13 @@
 package entity
 
+import "github.com/saidaydogan/chi-poc/domain/category/entity"
+
 type Product struct {
-	Id         int     `sql:"Id,pk"`
-	Name       string  `sql:"Name"`
-	Sku        string  `sql:"Sku"`
-	Price      float64 `sql:"Price"`
-	CategoryId int     `sql:"CategoryId"`
+	tableName  struct{}         `pg:"products,discard_unknown_columns"`
+	Id         int              `pg:"Id, pk"`
+	Name       string           `pg:"Name"`
+	Sku        string           `pg:"Sku"`
+	Price      float64          `pg:"Price"`
+	CategoryId int              `pg:"CategoryId"`
+	Category   *entity.Category `pg:"rel:has-one, fk:CategoryId"`
 }

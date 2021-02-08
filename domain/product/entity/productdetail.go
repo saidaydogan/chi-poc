@@ -12,6 +12,6 @@ type StockInformation struct {
 }
 
 type CategoryInformation struct {
-	Id   string
+	Id   int
 	Name string
 }

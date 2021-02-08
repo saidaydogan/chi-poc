@@ -1,7 +1,7 @@
 package entity
 
 type Category struct {
-	Id          string
-	Name        string
-	Description string
+	Id          int    `pg:"Id,pk"`
+	Name        string `pg:"Name"`
+	Description string `pg:"Description"`
 }

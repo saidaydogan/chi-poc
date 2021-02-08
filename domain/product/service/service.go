@@ -7,6 +7,7 @@ import (
 
 type ProductService interface {
 	GetProductById(id int) (*entity.Product, error)
+	GetProductDetailById(id int) (*entity.Product, error)
 	CreateProduct(product *entity.Product) error
 	UpdateProduct(product *entity.Product) error
 	DeleteProduct(id int) error
@@ -26,6 +27,10 @@ type productService struct {
 
 func (r *productService) GetProductById(id int) (*entity.Product, error) {
 	return r.repo.GetProductById(id)
+}
+
+func (r *productService) GetProductDetailById(id int) (*entity.Product, error) {
+	return r.repo.GetProductDetailById(id)
 }
 
 func (r *productService) CreateProduct(product *entity.Product) error {

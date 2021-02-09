@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
-	"github.com/saidaydogan/chi-poc/api/product/model"
+	model "github.com/saidaydogan/chi-poc/api/product/model"
 	"github.com/saidaydogan/chi-poc/domain/product/entity"
 	"github.com/saidaydogan/chi-poc/domain/product/persistence"
 	"github.com/saidaydogan/chi-poc/domain/product/service"
@@ -26,11 +26,21 @@ func NewBaseHandler(productService service.ProductService, validator *validator.
 	}
 }
 
+// CreateProduct godoc
+// @Summary Create a new product
+// @Description Create a new product with the input payload
+// @Tags products
+// @Accept  json
+// @Produce  json
+// @Param product body model.CreateProductRequest true "Create product"
+// @Success 201 {object} model.ProductModel
+// @Router /products [post]
 func (c *BaseHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	var (
 		createRequest model.CreateProductRequest
-		product       *entity.Product
+		productEntity *entity.Product
+		productModel  *model.ProductModel
 	)
 
 	if err := json.NewDecoder(r.Body).Decode(&createRequest); err != nil {
@@ -43,19 +53,27 @@ func (c *BaseHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//product = &entity.Product{
-	//	Name:       createRequest.Name,
-	//	Sku:        createRequest.Sku,
-	//	Price:      createRequest.Price,
-	//	CategoryId: createRequest.CategoryId,
-	//}
+	productEntity = &entity.Product{
+		Name:       createRequest.Name,
+		Sku:        createRequest.Sku,
+		Price:      createRequest.Price,
+		CategoryId: createRequest.CategoryId,
+	}
 
-	if err := c.productService.CreateProduct(product); err != nil {
+	if err := c.productService.CreateProduct(productEntity); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondwithJSON(w, http.StatusCreated, product)
+	productModel = &model.ProductModel{
+		Id:         productEntity.Id,
+		Name:       productEntity.Name,
+		Sku:        productEntity.Sku,
+		Price:      productEntity.Price,
+		CategoryId: productEntity.CategoryId,
+	}
+
+	respondwithJSON(w, http.StatusCreated, productModel)
 }
 
 func (c *BaseHandler) GetById(w http.ResponseWriter, r *http.Request) {

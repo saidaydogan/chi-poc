@@ -15,6 +15,7 @@ type UpdateProductRequest struct {
 }
 
 type ProductModel struct {
+	Id         int     `json:"id"`
 	Name       string  `json:"name"`
 	Sku        string  `json:"sku"`
 	Price      float64 `json:"price"`

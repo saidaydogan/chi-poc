@@ -10,13 +10,29 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	productApi "github.com/saidaydogan/chi-poc/api/product"
+	_ "github.com/saidaydogan/chi-poc/cmd/product-api/docs"
 	"github.com/saidaydogan/chi-poc/domain/product/persistence"
 	"github.com/saidaydogan/chi-poc/domain/product/service"
 	"github.com/saidaydogan/chi-poc/pkg/db/postgre"
+	"github.com/saidaydogan/chi-poc/pkg/httpswagger"
 	"net/http"
 	"time"
 )
 
+// @title Product API
+// @version 1.0
+// @description This is a sample REST API.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host http://localhost:3333/
+// @BasePath /v2
 func main() {
 	zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	//log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339})
@@ -41,6 +57,8 @@ func main() {
 	translator, _ := uni.GetTranslator("en")
 
 	_ = en_translations.RegisterDefaultTranslations(validatorInstance, translator)
+
+	r.Get("/swagger/*", httpswagger.WrapHandler)
 
 	r.Route("/v1", func(r chi.Router) {
 		productApi.Init(r, productService, validatorInstance, translator)

@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"github.com/go-pg/pg/v10"
+	"github.com/rs/zerolog/log"
 	"github.com/saidaydogan/chi-poc/domain/product/entity"
 )
 
@@ -50,7 +51,17 @@ func (r *productRepository) GetProductDetailById(id int) (*entity.Product, error
 	//}).WherePK().Select()
 	//
 
-	err := r.db.Model(&product).Relation("Category").WherePK().Select()
+	q := r.db.Model(&product).Relation("Category").WherePK()
+	qq := pg.QueryEvent{
+		DB:    r.db,
+		Model: q.TableModel(),
+		Query: q,
+	}
+	fQuery, _ := qq.FormattedQuery()
+
+	log.Debug().Msg(string(fQuery))
+
+	err := q.Select()
 	if err == pg.ErrNoRows {
 		return nil, NotFoundError
 	}

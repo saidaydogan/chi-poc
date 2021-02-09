@@ -7,6 +7,8 @@ import (
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	en_translations "github.com/go-playground/validator/v10/translations/en"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	productApi "github.com/saidaydogan/chi-poc/api/product"
 	"github.com/saidaydogan/chi-poc/domain/product/persistence"
 	"github.com/saidaydogan/chi-poc/domain/product/service"
@@ -16,6 +18,9 @@ import (
 )
 
 func main() {
+	zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	//log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339})
+
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
@@ -25,11 +30,6 @@ func main() {
 	r.Use(middleware.Timeout(60 * time.Second))
 
 	var db = postgre.Initialize("postgres", "changeme", "product_db")
-
-	err := postgre.CreateSchema(db)
-	if err != nil {
-		panic(err)
-	}
 
 	productRepo := persistence.NewProductRepository(db)
 	productService := service.NewProductService(productRepo)
@@ -46,5 +46,10 @@ func main() {
 		productApi.Init(r, productService, validatorInstance, translator)
 	})
 
-	http.ListenAndServe(":3333", r)
+	log.Info().Msg("Starting server...")
+
+	err := http.ListenAndServe("localhost:3333", r)
+	if err != nil {
+		log.Fatal().Msg(err.Error())
+	}
 }

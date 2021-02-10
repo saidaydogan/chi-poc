@@ -154,7 +154,7 @@ func (c *BaseHandler) UpdateById(w http.ResponseWriter, r *http.Request) {
 	product.Name = updateRequest.Name
 	product.Sku = updateRequest.Sku
 	product.Price = updateRequest.Price
-	//product.CategoryId = updateRequest.CategoryId
+	product.CategoryId = updateRequest.CategoryId
 
 	if err = c.productService.UpdateProduct(product); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())

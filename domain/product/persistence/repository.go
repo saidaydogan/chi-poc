@@ -29,7 +29,6 @@ func (r *productRepository) GetProductById(id int) (*entity.Product, error) {
 	var product = &entity.Product{
 		Id: id,
 	}
-	//var product = new(entity.Product)
 
 	err := r.db.Model(product).WherePK().Select()
 	if err == pg.ErrNoRows {

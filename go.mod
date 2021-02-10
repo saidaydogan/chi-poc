@@ -4,7 +4,8 @@ go 1.15
 
 require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
-	github.com/go-chi/chi v1.5.0
+	github.com/go-chi/chi v1.5.1
+	github.com/go-chi/httplog v0.1.8
 	github.com/go-pg/pg/v10 v10.7.5
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0

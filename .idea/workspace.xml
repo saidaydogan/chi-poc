@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="80c9eee0-e5d2-4348-b237-836d65e83c43" name="Default Changelist" comment="add query hook &amp; add zero log">
-      <change afterPath="$PROJECT_DIR$/pkg/httpswagger/swagger.go" afterDir="false" />
+    <list default="true" id="80c9eee0-e5d2-4348-b237-836d65e83c43" name="Default Changelist" comment="add swaggergo">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/product/controller/product.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/product/controller/product.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/product/model/product.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/product/model/product.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmd/product-api/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/product-api/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
@@ -139,7 +137,8 @@
     <MESSAGE value="Custom error, postgre get by id implements" />
     <MESSAGE value="Create and Update" />
     <MESSAGE value="Get detail" />
-    <option name="LAST_COMMIT_MESSAGE" value="Get detail" />
+    <MESSAGE value="add swaggergo" />
+    <option name="LAST_COMMIT_MESSAGE" value="add swaggergo" />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
@@ -149,23 +148,18 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/api/product/controller/product.go</url>
-          <line>63</line>
+          <line>64</line>
           <option name="timeStamp" value="16" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/api/product/controller/product.go</url>
-          <line>62</line>
+          <line>63</line>
           <option name="timeStamp" value="17" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/domain/product/persistence/repository.go</url>
           <line>34</line>
           <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/domain/product/persistence/repository.go</url>
-          <line>64</line>
-          <option name="timeStamp" value="25" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

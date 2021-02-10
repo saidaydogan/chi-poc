@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/httplog"
 	"github.com/go-playground/locales/en"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
@@ -36,16 +37,18 @@ import (
 func main() {
 	zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	//log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339})
+	logger := httplog.NewLogger("product-api", httplog.Options{
+		JSON: true,
+	})
 
 	r := chi.NewRouter()
-	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
+	r.Use(httplog.RequestLogger(logger))
+	r.Use(middleware.Heartbeat("/ping"))
 
 	r.Use(middleware.Timeout(60 * time.Second))
 
 	var db = postgre.Initialize("postgres", "changeme", "product_db")
+	defer db.Close()
 
 	productRepo := persistence.NewProductRepository(db)
 	productService := service.NewProductService(productRepo)

@@ -12,6 +12,8 @@ import (
 	"github.com/rs/zerolog/log"
 	productApi "github.com/saidaydogan/chi-poc/api/product"
 	_ "github.com/saidaydogan/chi-poc/cmd/product-api/docs"
+	categoryEntity "github.com/saidaydogan/chi-poc/domain/category/entity"
+	productEntity "github.com/saidaydogan/chi-poc/domain/product/entity"
 	"github.com/saidaydogan/chi-poc/domain/product/persistence"
 	"github.com/saidaydogan/chi-poc/domain/product/service"
 	"github.com/saidaydogan/chi-poc/pkg/db/postgre"
@@ -48,7 +50,11 @@ func main() {
 	r.Use(middleware.Timeout(60 * time.Second))
 
 	var db = postgre.Initialize("postgres", "changeme", "product_db")
-	defer db.Close()
+
+	err := db.Debug().AutoMigrate(&productEntity.Product{}, &categoryEntity.Category{})
+	if err != nil {
+		panic(err)
+	}
 
 	productRepo := persistence.NewProductRepository(db)
 	productService := service.NewProductService(productRepo)
@@ -69,7 +75,7 @@ func main() {
 
 	log.Info().Msg("Starting server...")
 
-	err := http.ListenAndServe("localhost:3333", r)
+	err = http.ListenAndServe("localhost:3333", r)
 	if err != nil {
 		log.Fatal().Msg(err.Error())
 	}

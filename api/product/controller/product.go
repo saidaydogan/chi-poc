@@ -91,6 +91,7 @@ func (c *BaseHandler) GetById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	productModel = &model.ProductModel{
+		Id:         productEntity.Id,
 		Name:       productEntity.Name,
 		Sku:        productEntity.Sku,
 		Price:      productEntity.Price,

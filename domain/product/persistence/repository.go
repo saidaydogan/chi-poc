@@ -1,9 +1,9 @@
 package persistence
 
 import (
-	"github.com/go-pg/pg/v10"
-	"github.com/rs/zerolog/log"
+	"errors"
 	"github.com/saidaydogan/chi-poc/domain/product/entity"
+	"gorm.io/gorm"
 )
 
 type ProductRepository interface {
@@ -15,10 +15,10 @@ type ProductRepository interface {
 }
 
 type productRepository struct {
-	db *pg.DB
+	db *gorm.DB
 }
 
-func NewProductRepository(db *pg.DB) ProductRepository {
+func NewProductRepository(db *gorm.DB) ProductRepository {
 
 	return &productRepository{
 		db: db,
@@ -30,57 +30,40 @@ func (r *productRepository) GetProductById(id int) (*entity.Product, error) {
 		Id: id,
 	}
 
-	err := r.db.Model(product).WherePK().Select()
-	if err == pg.ErrNoRows {
+	result := r.db.First(product)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, NotFoundError
 	}
-	return product, err
+	return product, result.Error
 }
 
 func (r *productRepository) GetProductDetailById(id int) (*entity.Product, error) {
-	var product = entity.Product{
+	var product = &entity.Product{
 		Id: id,
 	}
 
-	// Join columns
-	//err := r.db.Model(&product).Relation("Category", func(q *orm.Query) (*orm.Query, error) {
-	//	join := q.TableModel().GetJoin("Category")
-	//	join.Columns = []string{"Id", "Name"}
-	//	return q, nil
-	//}).WherePK().Select()
-	//
+	result := r.db.Debug().Joins("Category").First(product)
 
-	q := r.db.Model(&product).Relation("Category").WherePK()
-	qq := pg.QueryEvent{
-		DB:    r.db,
-		Model: q.TableModel(),
-		Query: q,
-	}
-	fQuery, _ := qq.FormattedQuery()
-
-	log.Debug().Msg(string(fQuery))
-
-	err := q.Select()
-	if err == pg.ErrNoRows {
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, NotFoundError
 	}
-	return &product, err
+	return product, result.Error
 }
 
 func (r *productRepository) CreateProduct(product *entity.Product) error {
-	_, err := r.db.Model(product).Insert()
-	return err
+	result := r.db.Create(product)
+	return result.Error
 }
 
 func (r *productRepository) UpdateProduct(product *entity.Product) error {
-	_, err := r.db.Model(product).WherePK().Update()
-	return err
+	result := r.db.Save(&product)
+	return result.Error
 }
 
 func (r *productRepository) DeleteProduct(id int) error {
 	var product = &entity.Product{
 		Id: id,
 	}
-	_, err := r.db.Model(&product).Delete()
-	return err
+	result := r.db.Delete(product)
+	return result.Error
 }
